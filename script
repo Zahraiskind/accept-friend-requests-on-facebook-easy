@@ -1,11 +1,8 @@
-// If the script does not work, you may need to allow same site scripting https://stackoverflow.com/a/50902950
-
 Facebook = {
     config: {
-        actionDelay: 1000,
+        actionDelay: 15000, // 15 seconds delay between accepting friend requests
         scrollDelay: 5000,
-        // set to -1 for no limit
-        maxRequestsToAccept: -1,
+        maxRequestsToAccept: 100, // Limit to 100 friend requests
         totalRequestsAccepted: 0,
         // set string to be present in names to be accepted, leave empty to accept all
         mustIncludeInName: [],
@@ -22,7 +19,7 @@ Facebook = {
             }
         }
         var totalRows = data.length; 
-        console.debug("DEBUG: total confirm buttons found on page are " + totalRows);
+        console.debug("DEBUG: total confirm buttons found on the page are " + totalRows);
         if (totalRows > 0) {
             this.confirm(data, config);
         } else {
@@ -33,7 +30,7 @@ Facebook = {
     confirm: function(data, config) {
         if (data.length === 0){
             console.info("INFO: Current friend request list exhausted! Scrolling for more...");
-            console.debug("DEBUG: scrolling to bottom in " + config.actionDelay + " ms");
+            console.debug("DEBUG: scrolling to the bottom in " + config.actionDelay / 1000 + " seconds");
             setTimeout(() => this.scrollBottom(data, config), config.actionDelay);
         } else {
             var friendRequest = data.shift();
@@ -48,16 +45,16 @@ Facebook = {
                         this.complete(config);
                     } else {
                         console.info("INFO: " + config.totalRequestsAccepted + " friend requests accepted!");
-                        console.debug("DEBUG: Accepting next friend request in " + config.actionDelay);
+                        console.debug("DEBUG: Accepting the next friend request in " + config.actionDelay / 1000 + " seconds");
                         setTimeout(() => this.confirm(data, config), config.actionDelay);
                     }
                 } else {
                     console.debug("DEBUG: Ignoring friend request from " + friendRequestName);
-                    console.debug("DEBUG: Accepting next friend request in " + config.actionDelay);
+                    console.debug("DEBUG: Accepting the next friend request in " + config.actionDelay / 1000 + " seconds");
                     setTimeout(() => this.confirm(data, config), config.actionDelay);
                 }
             } catch (e) {
-                console.debug("DEBUG: Accepting next friend request in " + config.actionDelay);
+                console.debug("DEBUG: Accepting the next friend request in " + config.actionDelay / 1000 + " seconds");
                 setTimeout(() => this.confirm(data, config), config.actionDelay);
             }
             
@@ -65,7 +62,7 @@ Facebook = {
     },
     scrollBottom: function (data, config) {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        console.debug("DEBUG: waiting for scroll data to load, then finding buttons in " + config.scrollDelay + " ms");
+        console.debug("DEBUG: waiting for scroll data to load, then finding buttons in " + config.scrollDelay / 1000 + " seconds");
         setTimeout(() => this.inspect(data, config), config.scrollDelay);
     },
     complete: function (config) {
